@@ -31,7 +31,7 @@ const Login = () => {
 
       if (res.data.data) {
         setUser(res.data.data);
-        navigate('/feed');
+        navigate('/');
       } else {
         setUser(undefined);
       }
