@@ -1,13 +1,39 @@
+import axios from 'axios';
 import { useAtom } from 'jotai';
 import React from 'react';
+import { Link, useNavigate } from 'react-router';
 import { userAtom } from '../atom/store';
+import { BASE_URL } from '../utils/constants';
 
 const NavBar = () => {
   const [user] = useAtom(userAtom);
+
+  const navigate = useNavigate();
+  const [, setUser] = useAtom(userAtom);
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/logout`,
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setUser(undefined);
+        navigate('/login');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className='navbar bg-base-300 shadow-sm'>
       <div className='flex-1'>
-        <a className='btn btn-ghost text-xl'>Dev Tinder</a>
+        <Link to='/' className='btn btn-ghost text-xl'>
+          Dev Tinder
+        </Link>
       </div>
       {user && (
         <div className='flex gap-2'>
@@ -34,16 +60,23 @@ const NavBar = () => {
               className='menu menu-sm dropdown-content bg-base-300 rounded-box z-1 mt-3 w-52 p-2 shadow'
             >
               <li>
-                <a className='justify-between'>
+                <Link to={'/profile'} className='justify-between'>
                   Profile
                   <span className='badge'>New</span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a>Settings</a>
+                <Link to={'/connection'} className='justify-between'>
+                  Connections
+                </Link>
               </li>
               <li>
-                <a>Logout</a>
+                <Link to={'/request'} className='justify-between'>
+                  Request
+                </Link>
+              </li>
+              <li>
+                <a onClick={handleLogout}>Logout</a>
               </li>
             </ul>
           </div>
